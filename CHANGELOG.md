@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file.
 
 - Initial repository with README describing dual-partition USB toolkit build (Hiren's PE + exFAT).
 
-- Evidence & artifacts list (screenshot descriptions and filenames).
+- Evidence & artifacts section with descriptions (no images required).
 
 - MIT license.
-

@@ -10,114 +10,122 @@ One-drive, dual-partition USB toolkit that pairs a bootable **Hiren's BootCD PE 
 
   - Includes a separate **exFAT** partition for drivers, logs, utilities, and exports.
 
-- Prove access and recovery capability (local account reset test), and add a fast-access **AdminTools ("God Mode")** launcher. :contentReference[oaicite:25]{index=25}
+- Prove access and recovery capability (local account reset test), and add a fast-access **AdminTools ("God Mode")** launcher.
 
 ## Environment & Prerequisites
 
 - **Host OS:** Windows 11/10 (Admin rights).
 
-- **Media:** Two USB 3.0 flash drives, **≥64 GB** each (128 GB preferred).
+- **Media:** One USB 3.0 flash drive, **≥64 GB** (128 GB preferred).
 
   - USB-A or USB-C; UEFI-bootable firmware recommended.
 
 - **Downloads:**
 
-  - `HBCD_PE_x64.iso` (Hiren's BootCD PE x64 v1.0.2; ~2.88 GB). Verify with vendor hashes when possible (MD5/SHA-1/SHA-256 published by Hiren's). :contentReference[oaicite:26]{index=26}
+  - `HBCD_PE_x64.iso` (Hiren's BootCD PE x64 v1.0.2; ~2.9 GB).
 
-  - **ISO2USB.exe** (Hiren's official PE writer tool). :contentReference[oaicite:27]{index=27}
+  - `ISO2USB.exe` (Hiren's official PE writer tool).
 
-> ⚠️ Avoid adware "download" buttons; use the official Hiren's links only. :contentReference[oaicite:28]{index=28}
+> Tip: Verify ISO integrity before writing by comparing SHA-256 hashes from the official site.
 
 ## Steps Summary
 
-1. **Stage ISO** on **USB-1**: download `HBCD_PE_x64.iso` and `ISO2USB.exe`. :contentReference[oaicite:29]{index=29}  
+1. Download `HBCD_PE_x64.iso` and `ISO2USB.exe` from the official Hiren's site.
 
-2. **Prepare USB-2 (target):** ensure it's ≥64 GB and UEFI-bootable.
+2. Insert the target USB (≥64 GB) and back up any data on it.
 
-3. **Write Hiren's to USB-2** with **ISO2USB.exe**: choose the device, select ISO, optionally set volume label (≤11 chars), then **format + copy**. :contentReference[oaicite:30]{index=30}
+3. Launch **ISO2USB.exe**, select the USB device and the `HBCD_PE_x64.iso`, enable **Format** and write the image.
 
-4. **Create a second partition** on USB-2 for tools and label it `exFatUSB` (exFAT; ≥32 GB). (If ISO2USB takes the whole disk, shrink the Hiren's partition then create exFAT.)
+4. Open **Disk Management** and **shrink** the bootable partition if it consumed the whole drive.
 
-5. **Name the bootable partition** `HirenBPE` (or similar; format is managed by the writer). :contentReference[oaicite:31]{index=31}
+5. Create a second **exFAT** partition (label: `exFatUSB`) for tools, logs, drivers, and exports.
 
-6. **(Optional) Verify ISO integrity** before writing:
+6. Optional hash check:
 
    ```powershell
    certutil -hashfile .\HBCD_PE_x64.iso SHA256
    ```
 
-Compare to the vendor's SHA-256. 
+7. Reboot and use the firmware **one-time boot menu** to boot from the USB (UEFI preferred).
 
-7. **Boot test:** reboot to the USB from your firmware's **Boot Menu** (UEFI preferred).
+8. In Hiren's PE, verify access to core tools (disk, imaging, AV, password, Sysinternals, network).
 
-8. **In Hiren's PE**, explore tools (disk, imaging, AV, password, Sysinternals, network). 
+9. **Local account reset drill:** create a temporary local admin `HirenTest`, then use Hiren's **Security → Passwords** utility to change/remove its password offline.
 
-9. **Local account reset drill:** on a Windows 10 machine, create a throwaway admin account `HirenTest` with password `1qaz!QAZ1qaz`, then demonstrate offline password change/remove using Hiren's **Security → Passwords** tools. Capture **Task/Result** details. 
+10. Create a **God Mode** folder on `exFatUSB` for quick admin access:
 
-10. **Create "God Mode" folder** on `exFatUSB`:
+    ```
+    AdminTools.{ED7BA470-8E54-465E-825C-99712043E01C}
+    ```
 
-- New folder named exactly:
+11. Validate results and document evidence (descriptions below).
 
-`       AdminTools.{ED7BA470-8E54-465E-825C-99712043E01C}
+12. Note limitations: domain-joined accounts require domain/IDP workflows; local tools affect local accounts only.
 
-      `
+## Evidence & Artifacts (descriptions only — no image files required)
 
-This exposes a consolidated view of administrative controls. 
+* **Artifact 01 — Hiren's download page:** Official page showing `HBCD_PE_x64.iso` name, file size, and published hashes.
 
-11. **Validate access & artifacts** (see list below) and document outcomes.
+  **Alt text:** "Download table listing HBCD_PE_x64.iso with MD5/SHA-1/SHA-256 values and ~2.9 GB size."
 
-12. **(Notes)** Domain-joined devices won't honor local-only resets for domain accounts—understand scope/limitations. 
+* **Artifact 02 — ISO2USB configuration:** Writer tool window with USB target selected, ISO path set, and Format option enabled.
 
-## Evidence & Artifacts
+  **Alt text:** "ISO2USB shows selected removable drive, ISO path, and a checked 'Format' box."
 
-> Name screenshots exactly; you can capture/upload later into `/artifacts/`.
+* **Artifact 03 — ISO2USB completion:** Confirmation dialog indicating the boot sector and files were written successfully.
 
-* `01-hirens-site-iso-page.png` — *Official Hiren's BootCD PE download page with ISO name/size and hash values visible.* **Alt:** "HBCD_PE_x64.iso listed with MD5/SHA-1/SHA-256 and 2.88 GB file size." 
+  **Alt text:** "Progress bar complete with a success status message."
 
-* `02-iso2usb-device-and-iso.png` — *ISO2USB.exe with target USB selected and ISO path populated.* **Alt:** "USB device drop-down; HBCD_PE_x64.iso selected; Format option checked." 
+* **Artifact 04 — Partition layout:** Windows Disk Management illustrating a small bootable partition and a large **exFAT** partition labeled `exFatUSB`.
 
-* `03-iso2usb-complete.png` — *ISO2USB success dialog indicating files copied and boot sector prepared.* **Alt:** "Progress finished; success status." 
+  **Alt text:** "Removable disk with two partitions; one active/EFI, one exFAT data volume."
 
-* `04-disk-management-partitions.png` — *Windows Disk Management showing `HirenBPE` boot partition and large `exFatUSB` partition.* **Alt:** "UEFI bootable partition + exFAT data partition."
+* **Artifact 05 — UEFI boot menu:** Firmware boot picker with the USB device selected under UEFI entries.
 
-* `05-uefi-boot-menu.png` — *Firmware one-time boot menu with the USB device chosen.* **Alt:** "UEFI: <USB brand/model> selected."
+  **Alt text:** "One-time boot menu showing 'UEFI: <USB Brand/Model>' highlighted."
 
-* `06-hirens-pe-desktop.png` — *Hiren's BootCD PE desktop with Tools menu visible.* **Alt:** "PE desktop; tool groups like Hard Disk, Security, System Tools, Network." 
+* **Artifact 06 — Hiren's PE desktop:** PE environment open with categories such as Hard Disk, Security, System Tools, Network.
 
-* `07-password-tool-task-details.png` — *Password reset utility showing `HirenTest` account changed/cleared.* **Alt:** "'Task details' or result log indicating success for local user." 
+  **Alt text:** "Windows PE desktop wallpaper and a menu of troubleshooting tools."
 
-* `08-win10-sign-in-after-reset.png` — *Windows sign-in confirming access to `HirenTest` post-reset.* **Alt:** "Local login screen success state."
+* **Artifact 07 — Password tool result:** Hiren's password utility showing the `HirenTest` local account password changed/cleared with a success log.
 
-* `09-admintools-godmode-folder.png` — *Explorer view of `AdminTools.{ED7BA470-…}` folder displaying the unified admin settings list.* **Alt:** "Control panel categories combined in one view." 
+  **Alt text:** "Task/result pane confirming local user password operation completed."
+
+* **Artifact 08 — Post-reset sign-in:** Windows sign-in screen confirming access to `HirenTest` after the reset.
+
+  **Alt text:** "Login accepted for local account; desktop loads successfully."
+
+* **Artifact 09 — God Mode folder view:** Explorer showing `AdminTools.{ED7BA470-…}` expanding into a unified list of administrative controls.
+
+  **Alt text:** "Control Panel categories consolidated in a single folder-style view."
 
 ## Results & Validation
 
-* USB boots into **Hiren's PE** on UEFI hardware.
+* USB boots into **Hiren's PE** via UEFI on test hardware.
 
-* Password tool **modifies a local account** (`HirenTest`) and login succeeds afterward (screenshot of tool "Task details" + Windows sign-in).
+* Local account `HirenTest` password operation succeeds and interactive logon confirms access.
 
-* `exFatUSB` is readable/writeable on Windows and holds the **AdminTools (God Mode)** folder view.
-
-* Understanding clarified: **domain accounts** on managed machines are **not** resettable via local offline tools; domain policy controls apply. 
+* Secondary **exFAT** partition is readable/writeable in Windows and contains the **AdminTools (God Mode)** folder.
 
 ## What I Learned
 
-* How to **author a UEFI-bootable Windows PE** recovery drive and keep a **separate tools partition**.
+* Authoring a **UEFI-bootable Windows PE** recovery drive and keeping a **separate tools partition** for workflow speed.
 
-* Practical use of **Hiren's security, disk, and imaging utilities** during offline response. 
+* Hands-on use of **offline security, disk, and imaging** utilities for incident response.
 
-* Differences between **local vs. domain credential** reset scenarios and why domain joins block local-only resets. 
+* Limits of offline password tools with **domain-joined** devices vs. local accounts.
 
-* Fast navigation via **AdminTools (God Mode)** for consolidated Windows administration. 
+* Faster navigation of Windows administration via **God Mode**.
 
 ## Troubleshooting Notes
 
-* **Won't boot USB:** Ensure **UEFI** is enabled; disable **Secure Boot** if required; try a different port; re-write the USB with ISO2USB.
+* **USB won't boot:** Ensure **UEFI** is enabled; toggle **Secure Boot** off if needed; try another port; re-write with ISO2USB.
 
-* **USB not listed in ISO2USB:** Pre-format with Windows Format (restore defaults), then click **Refresh** in ISO2USB. 
+* **USB not listed in ISO2USB:** Pre-format the drive in Windows (Restore defaults) and press **Refresh** in ISO2USB.
 
-* **Partition layout issues:** If ISO writer consumes full disk, **shrink** the PE partition then create the exFAT partition; as a last resort, back up and rebuild.
+* **Can't create second partition:** Shrink the first partition in **Disk Management**; if blocked, back up and fully re-image the USB, then partition.
 
-* **Password tool "no effect":** Verify you're targeting a **local** account; domain-joined endpoints require domain workflows (helpdesk/IDP reset). 
+* **Password tool had no effect:** Confirm you targeted a **local** account; domain accounts require domain/IDP reset procedures.
 
-* **Corrupt ISO:** Re-download and verify hash (MD5/SHA-256) against the published values. 
+* **Hash mismatch:** Re-download the ISO and verify again before writing.
